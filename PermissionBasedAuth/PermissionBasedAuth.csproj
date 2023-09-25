@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-PermissionBasedAuth-e0f4f4da-1c47-4aff-95c3-13ec65a94273</UserSecretsId>
   </PropertyGroup>
