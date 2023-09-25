@@ -38,4 +38,24 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+var context = services.GetRequiredService<ApplicationDbContext>();
+var logger = services.GetRequiredService<ILogger<Program>>();
+try
+{
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await context.Database.MigrateAsync();
+    await SeedData.SeedRolesAsync(roleManager);
+    await SeedData.SeedSuperAdminAsync(userManager);
+
+    logger.LogInformation("Data seeded successfully");
+}
+catch (Exception ex)
+{
+    logger.LogError(ex, "An error occured during seeding data");
+}
+
 app.Run();
