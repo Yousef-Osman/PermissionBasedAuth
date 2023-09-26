@@ -49,7 +49,7 @@ try
 
     await context.Database.MigrateAsync();
     await SeedData.SeedRolesAsync(roleManager);
-    await SeedData.SeedSuperAdminAsync(userManager);
+    await SeedData.SeedSuperAdminAsync(userManager, roleManager);
 
     logger.LogInformation("Data seeded successfully");
 }
