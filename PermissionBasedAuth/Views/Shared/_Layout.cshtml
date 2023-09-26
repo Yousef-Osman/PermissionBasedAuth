@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using PermissionBasedAuth.Models.Enums;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,6 +7,7 @@
     <title>@ViewData["Title"] - PermissionBasedAuth</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/PermissionBasedAuth.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -22,9 +24,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                        }
+                        @if (User.IsInRole(nameof(UserRoles.Admin)) || User.IsInRole(nameof(UserRoles.SuperAdmin)))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Admin</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

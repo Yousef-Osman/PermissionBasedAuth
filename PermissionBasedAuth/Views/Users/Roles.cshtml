@@ -1,0 +1,160 @@
+﻿@model IEnumerable<IdentityRole>;
+
+@{
+    ViewData["Title"] = "Index";
+    var roleModel = new RoleVM();
+}
+
+<partial name="_ResultAlerts" />
+
+<section class="col-md-8 mx-auto">
+    <div class="card shadow p-5 mt-5">
+        <div class="d-flex mb-3">
+            <h4 class="me-auto text-dimgrey">User Roles</h4>
+            <a class="btn btn-primary align-self-start" data-bs-toggle="modal" data-bs-target="#add-role-modal"><i class="fa-solid fa-plus"></i></a>
+        </div>
+        <ul class="list-group">
+            @foreach (var role in Model)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-content-center my-1">
+                        <p class="mb-0 align-self-center">@role.Name</p>
+                        <div>
+                            <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-warning" title="Edit Role"><i class="fas fa-edit text-white"></i></a>
+                            <a asp-action="EditRolePermissions" asp-route-id="@role.Id" class="btn btn-success" title="Edit Permissions"><i class="fas fa-edit text-white"></i></a>
+                            <button value="@role.Name" id="@role.Id" class="btn btn-danger delete-role-btn"><i class="fas fa-trash text-white"></i></button>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary mt-3 px-3 ms-auto">Back</a>
+    </div>
+</section>
+
+<div class="modal fade" id="add-role-modal" tabindex="-1" aria-hidden="true">
+    <partial name="_AddRolePartial" model="new RoleVM()" />
+</div>
+
+<div class="modal fade" id="delete-role-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body px-4 py-3">
+                <h4 class="my-3 text-danger">Delete role</h4>
+                <div class="mb-3">
+                    <p>Are you sure you want to delete role <strong id="delete-modal-text"></strong></p>
+                </div>
+                <div class="d-flex justify-content-end mb-3">
+                    <button class="btn btn-danger px-3 me-1" id="confirm-delete-btn">Yes</button>
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            const addRoleModal = new bootstrap.Modal(document.getElementById('add-role-modal'));
+            const deleteRoleModal = new bootstrap.Modal(document.getElementById('delete-role-modal'));
+            const successAlert = document.getElementById('success-alert');
+            const dangerAlert = document.getElementById('danger-alert');
+
+            document.getElementById('add-form').onsubmit = function (e) {
+                document.getElementById('add-validation-result').innerHTML = '';
+
+                if (!$(this).valid())
+                    return;
+
+                e.preventDefault();
+                var form = new FormData(e.target);
+
+                fetch('/Users/AddRole', {
+                    method: 'Post',
+                    credentials: 'include',
+                    body: form,
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(response.status);
+                    }
+
+                    return response.json();
+                }).then(data => {
+                    if (data.isSuccess) {
+                        addRoleModal.hide();
+                        successAlert.hidden = false;
+                        setTimeout(function () {
+                            successAlert.hidden = true;
+                            window.location.href = '/Users/Roles';
+                        }, 2000);
+                    } else {
+                        displayValidationError(data.errors, 'add-validation-result');
+                    }
+                }).catch(error => {
+                    addRoleModal.hide();
+                    dangerAlert.hidden = false;
+                    setTimeout(function () { dangerAlert.hidden = true; }, 3000);
+                });
+
+                function displayValidationError(errors, element) {
+                    let validationDiv = document.getElementById(element);
+                    errors.forEach(error => {
+                        validationDiv.innerHTML += `<li>${error}</li>`;
+                    });
+                };
+            };
+
+            document.getElementById('cancel-add-btn').onclick = function (e) {
+                document.getElementById('add-form').reset();
+            };
+
+            let roleId;
+
+            document.querySelectorAll('.delete-role-btn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    roleId = this.id;
+                    document.getElementById('delete-modal-text').innerHTML = `"${this.value}"`;
+                    deleteRoleModal.show();
+                });
+            });
+
+            document.getElementById('confirm-delete-btn').onclick = function () {
+                deleteRoleModal.hide();
+                if (!roleId)
+                    return;
+
+                fetch('/Users/DeleteRole', {
+                    headers: { 'Content-Type': 'application/json' },
+                    method: 'Delete',
+                    credentials: 'include',
+                    body: JSON.stringify({ id: roleId }),
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(response.status);
+                    }
+
+                    return response.json();
+                }).then(data => {
+                    if (data.isSuccess) {
+                        successAlert.hidden = false;
+                        setTimeout(function () {
+                            successAlert.hidden = true;
+                            window.location.href = '/Users/Roles';
+                        }, 2000);
+                    } else {
+                        document.getElementById('danger-alert-message').innerHTML = data.errorMessage;
+                        dangerAlert.hidden = false;
+                        setTimeout(function () { dangerAlert.hidden = true; }, 3000);
+                    }
+                }).catch(error => {
+                    dangerAlert.hidden = false;
+                    setTimeout(function () { dangerAlert.hidden = true; }, 3000);
+                });
+            };
+        });
+    </script>
+}

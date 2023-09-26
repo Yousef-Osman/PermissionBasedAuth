@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Admin";
+}
+
+<div>
+    <h1 class="display-4">Admin Page</h1>
+    <p class="lead text-dimgrey mb-2">
+        <strong>
+            This page is accessible by any user in the following roles:
+        </strong>
+    </p>
+    <ul>
+        <li class="lead text-primary"><strong>Super Admin</strong></li>
+        <li class="lead text-primary"><strong>Admin</strong></li>
+    </ul>
+</div>
+
+<a class="btn btn-outline-success" asp-controller="Users" asp-action="Index">User Roles</a>
+<a class="btn btn-outline-success" asp-controller="Users" asp-action="Roles">Roles</a>

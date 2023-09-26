@@ -36,7 +36,7 @@ public static class SeedData
             var result = await userManager.CreateAsync(superAdminUser, "#Aaa123");
 
             if (result.Succeeded)
-                await userManager.AddToRoleAsync(superAdminUser, nameof(UserRoles.SuperAdmin));
+                await userManager.AddToRoleAsync(superAdminUser, UserRoles.SuperAdmin.ToString());
         }
 
         var superAdminRole = await roleManager.FindByNameAsync(UserRoles.SuperAdmin.ToString());

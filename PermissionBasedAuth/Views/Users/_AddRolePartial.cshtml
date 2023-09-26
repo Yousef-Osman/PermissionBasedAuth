@@ -1,0 +1,21 @@
+﻿@model RoleVM;
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body px-5 py-4">
+            <h4 class="my-3 text-success">Add new role</h4>
+            <form method="post" id="add-form">
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Name"></label>
+                    <input class="form-control" asp-for="Name" id="role-name" />
+                    <span class="text-danger" asp-validation-for="Name" id="role-name-input"></span>
+                    <div class="text-danger mt-2" id="add-validation-result"></div>
+                </div>
+                <div class="d-flex justify-content-end mb-3">
+                    <button type="submit" class="btn btn-success px-3 me-1">Save</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PermissionBasedAuth.Models;
+using PermissionBasedAuth.Models.Enums;
 using System.Diagnostics;
 
 namespace PermissionBasedAuth.Controllers;
