@@ -1,5 +1,7 @@
-﻿@using PermissionBasedAuth
+﻿@using Microsoft.AspNetCore.Authorization;
+@using PermissionBasedAuth
 @using PermissionBasedAuth.Models
 @using PermissionBasedAuth.ViewModels
 @using Microsoft.AspNetCore.Identity
+@inject IAuthorizationService authService
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

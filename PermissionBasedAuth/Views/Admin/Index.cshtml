@@ -15,5 +15,10 @@
     </ul>
 </div>
 
+@if (authService.AuthorizeAsync(User, "asa").Result.Succeeded)
+{
+    
+}
+
 <a class="btn btn-outline-success" asp-controller="Users" asp-action="Index">User Roles</a>
 <a class="btn btn-outline-success" asp-controller="Users" asp-action="Roles">Roles</a>

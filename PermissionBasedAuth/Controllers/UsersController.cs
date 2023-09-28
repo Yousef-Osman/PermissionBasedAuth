@@ -43,6 +43,7 @@ public class UsersController : Controller
         return View(users);
     }
 
+    #region User Roles
     public async Task<IActionResult> EditUserRole(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -91,7 +92,10 @@ public class UsersController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+    #endregion
 
+
+    #region Roles
     public async Task<IActionResult> Roles()
     {
         var roles = await _roleManager.Roles.ToListAsync();
@@ -167,7 +171,10 @@ public class UsersController : Controller
         else
             return Json(new JsonResponse { IsSuccess = false, ErrorMessage = "Something went wrong." });
     }
+    #endregion
 
+
+    #region Role Permissions
     public async Task<IActionResult> EditRolePermissions(string id)
     {
         var role = await _roleManager.FindByIdAsync(id);
@@ -228,4 +235,5 @@ public class UsersController : Controller
     {
         return modelState.Values.SelectMany(x => x.Errors.Select(c => c.ErrorMessage)).ToList();
     }
+    #endregion
 }
