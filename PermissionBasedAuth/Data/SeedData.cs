@@ -46,7 +46,7 @@ public static class SeedData
     public static async Task AddAllPermissionsToRole(this RoleManager<IdentityRole> roleManager, IdentityRole role)
     {
         var currentPermissions = await roleManager.GetClaimsAsync(role);
-        var allPermissions = PermissionManager.GenerateAllPermissions();
+        var allPermissions = Permissions.GenerateAllPermissions();
 
         foreach (var permission in allPermissions)
         {

@@ -29,6 +29,7 @@ public class UsersController : Controller
         _userManager = userManager;
     }
 
+    [Authorize(Permissions.Users.View)]
     public async Task<IActionResult> Index()
     {
         var users = await _userManager.Users.Select(a => new UserVM
@@ -44,6 +45,7 @@ public class UsersController : Controller
     }
 
     #region User Roles
+    [Authorize(Permissions.Users.Update)]
     public async Task<IActionResult> EditUserRole(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -68,6 +70,7 @@ public class UsersController : Controller
     }
 
     [HttpPost]
+    [Authorize(Permissions.Users.Update)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditUserRole(UserRolesVM model)
     {
@@ -96,6 +99,7 @@ public class UsersController : Controller
 
 
     #region Roles
+    [Authorize(Permissions.Roles.View)]
     public async Task<IActionResult> Roles()
     {
         var roles = await _roleManager.Roles.ToListAsync();
@@ -103,6 +107,7 @@ public class UsersController : Controller
     }
 
     [HttpPost]
+    [Authorize(Permissions.Roles.Create)]
     public async Task<IActionResult> AddRole(RoleVM model)
     {
         if (!ModelState.IsValid)
@@ -119,6 +124,7 @@ public class UsersController : Controller
         return Ok(new JsonResponse { IsSuccess = true });
     }
 
+    [Authorize(Permissions.Roles.Update)]
     public async Task<IActionResult> EditRole(string id)
     {
         var role = await _roleManager.FindByIdAsync(id);
@@ -131,6 +137,7 @@ public class UsersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Permissions.Roles.Update)]
     public async Task<IActionResult> EditRole(IdentityRole model)
     {
         if (!ModelState.IsValid)
@@ -152,6 +159,7 @@ public class UsersController : Controller
     }
 
     [HttpDelete]
+    [Authorize(Permissions.Roles.Delete)]
     public async Task<IActionResult> DeleteRole([FromBody] RoleVM model)
     {
         if (string.IsNullOrWhiteSpace(model?.Id))
@@ -175,6 +183,7 @@ public class UsersController : Controller
 
 
     #region Role Permissions
+    [Authorize(Permissions.Roles.Update)]
     public async Task<IActionResult> EditRolePermissions(string id)
     {
         var role = await _roleManager.FindByIdAsync(id);
@@ -185,7 +194,7 @@ public class UsersController : Controller
         var currentPermissions = _roleManager.GetClaimsAsync(role).Result
            .Where(a => a.Type == ClaimType.Permission.ToString()).Select(a => a.Value).ToList();
 
-        var allPermissions = PermissionManager.GenerateAllPermissions();
+        var allPermissions = Permissions.GenerateAllPermissions();
 
         var viewModel = new RolePermissionsVM()
         {
@@ -202,6 +211,7 @@ public class UsersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Permissions.Roles.Update)]
     public async Task<IActionResult> EditRolePermissions(RolePermissionsVM model)
     {
         if (!ModelState.IsValid)
